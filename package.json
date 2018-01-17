@@ -1,0 +1,28 @@
+{
+  "name": "backend",
+  "version": "1.0.0",
+  "description": "",
+  "main": "loader.js",
+  "scripts": {
+    "dev": "nodemon",
+    "production": "pm2 start loader.js --name backend"
+  },
+  "author": "Felipe Sangiorge",
+  "license": "ISC",
+  "dependencies": {
+    "bcrypt": "^1.0.2",
+    "body-parser": "^1.17.2",
+    "express": "^4.15.3",
+    "express-query-int": "^1.0.1",
+    "jsonwebtoken": "^7.3.0",
+    "lodash": "^4.17.4",
+    "mongoose": "^4.11.1",
+    "mongoose-paginate": "^5.0.3",
+    "mysql": "^2.14.1",
+    "node-restful": "^0.2.6",
+    "pm2": "^2.5.0"
+  },
+  "devDependencies": {
+    "nodemon": "^1.11.0"
+  }
+}
