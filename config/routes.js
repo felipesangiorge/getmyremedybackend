@@ -5,6 +5,27 @@ module.exports = function (server) {
   const router = express.Router()
   server.use('/api',router)
 
+//LOGIN
+ const login= require('../api/login/login')
+
+ router.post('/login',(req,res,next)=>{
+    var obj = {
+        user_mail:req.body.des_mail,
+        user_password:req.body.des_password
+    }
+
+    console.log(obj)
+    login.getLoginUser(obj, function(err, rows) {
+         if (rows.length > 0){
+           res.send({res : "login-access-success"})
+         }
+         else{
+            res.send({res: "login-access-fail"})
+          }
+     })
+
+ })
+
 //TASKLIST
   const remedys = require('../api/remedys/remedys')
 

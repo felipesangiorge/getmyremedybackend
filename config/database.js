@@ -28,6 +28,7 @@ function queryGet(sqlQry,res){
 
 function queryFunction(sqlQry, cb) {
   connection.query(sqlQry, cb)
+  console.log(sqlQry)
 }
 
 function query(sqlQry,res){
