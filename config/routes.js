@@ -1,4 +1,5 @@
 const express= require('express')
+const token = require ('jsonwebtoken')
 
 module.exports = function (server) {
 
@@ -8,7 +9,10 @@ module.exports = function (server) {
 //LOGIN
  const login= require('../api/login/login')
 
+
  router.post('/login',(req,res,next)=>{
+
+
     var obj = {
         user_mail:req.body.des_mail,
         user_password:req.body.des_password
@@ -17,10 +21,14 @@ module.exports = function (server) {
     console.log(obj)
     login.getLoginUser(obj, function(err, rows) {
          if (rows.length > 0){
-           res.send({res : "login-access-success"})
+
+        const tkr = token.sign({sub:obj.user_mail,iss:"gmr-api"},'gmr-api-password#$#@#$!#@$%!$##@!#*#@&(!$¨(!))')
+
+           res.send({res : "login-access-success",
+                    accessToken:tkr})
          }
          else{
-            res.send({res: "login-access-fail"})
+            res.status(403).send({res: "login-access-fail"})
           }
      })
 
