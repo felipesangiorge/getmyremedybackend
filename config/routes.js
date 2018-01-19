@@ -27,6 +27,7 @@ module.exports = function (server) {
         const tkr = token.sign({sub:obj.user_mail,iss:"gmr-api"},env.secret)
 
            res.send({res : "login-access-success",
+                    user_mail:obj.user_mail,
                     accessToken:tkr})
          }
          else{
