@@ -1,9 +1,9 @@
 const mysql = require('mysql')
 const connection = mysql.createConnection({
-host : 'getmyremedy.com.br',
+host : '',
 port: 3306,
 user:'root',
-password:'Flp18Tr!',
+password:'',
 database:'getmyrem_getmyremedyapp'
 })
 
