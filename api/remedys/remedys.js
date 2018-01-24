@@ -19,29 +19,31 @@ function getRemedysBySameName(id,res){
                         WHERE des_name like "${id}" `,res)
 }
 
-function verifyTaskList(idUserTaskList,taskListName,cb){
-  return con.queryFunction(`SELECT * FROM TB_tasklist tl INNER JOIN tb_user us ON (tl.cod_id_user_tasklist = us.cod_iduser)
-  WHERE cod_id_user_tasklist = ${idUserTaskList} AND des_nom_tasklist like "${taskListName}"`,cb)
+function verifyUserRemedyId(idtb_remedy_by_user,cb){
+  return con.queryFunction(`SELECT idtb_users FROM tb_users WHERE des_mail like "${idtb_remedy_by_user}"`,cb)
 }
 
 function verifyTaskListById(id,cb){
   return con.queryFunction(`SELECT * FROM TB_tasklist WHERE cod_idtasklist = ${id}`,cb)
 }
 
-function setTaskListByParams(req,res) {
+function setRemedyByParams(req,iduser,res) {
 
-  return con.query(`INSERT INTO db_lifeapp.TB_tasklist (cod_id_user_tasklist,
-                                                    des_nom_user_tasklist,
-                                                    des_nom_tasklist,
-                                                    des_type_tasklist,
-                                                    des_tasklist,
-                                                    des_date)
-                          VALUES (${req.idUserTaskList},
-                                  '${req.taskListUserName}',
-                                  '${req.taskListName}',
-                                  '${req.taskListType}',
-                                  '${req.taskListText}',
-                                  '${req.date}')`,res)
+  return con.query(`INSERT INTO tb_remedys       (des_name,
+                                                    des_category,
+                                                    des_dosage,
+                                                    des_validate,
+                                                    des_description,
+                                                    des_imagePath,
+                                                    idtb_remedy_by_user)
+
+                          VALUES ('${req.des_name}',
+                                  '${req.des_category}',
+                                  '${req.des_dosage}',
+                                  '${req.des_validate}',
+                                  '${req.des_description}',
+                                  '${req.des_imagePath}',
+                                  ${iduser})`,res)
 
 }
 
@@ -60,5 +62,5 @@ function deleteTaskListByParams(req,res){
 }
 
 module.exports = {getRemedys,getRemedysByMenuId,getRemedysBySameName,
-                  verifyTaskList,verifyTaskListById,getRemedysMenu,
-                  setTaskListByParams,updateTaskListByParams,deleteTaskListByParams}
+                  verifyUserRemedyId,verifyTaskListById,getRemedysMenu,
+                  setRemedyByParams,updateTaskListByParams,deleteTaskListByParams}

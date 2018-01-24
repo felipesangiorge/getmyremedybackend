@@ -1,10 +1,10 @@
 const mysql = require('mysql')
 const connection = mysql.createConnection({
-host : '',
+host : 'localhost',
 port: 3306,
 user:'root',
 password:'',
-database:'getmyrem_getmyremedyapp'
+database:'db_getmyremedyapp'
 })
 
 
@@ -28,11 +28,13 @@ function queryGet(sqlQry,res){
 
 function queryFunction(sqlQry, cb) {
   connection.query(sqlQry, cb)
-  
+
+
 }
 
 function query(sqlQry,res){
   connection.query(sqlQry,function (err,results,fields) {
+    console.log(sqlQry)
     if(err){
 
       return err

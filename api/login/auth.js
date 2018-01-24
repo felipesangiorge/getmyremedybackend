@@ -1,8 +1,15 @@
 const token = require ('jsonwebtoken')
 const env = require('../../.env')
 
+
 const handleAuthorization = (req,res,next) =>{
   const tkr = extractToken(req)
+
+  if(req.method == "OPTIONS"){
+
+    res.json({res:"ok"})
+
+  }else{
 
   if(!tkr){
 
@@ -15,12 +22,14 @@ const handleAuthorization = (req,res,next) =>{
 
       if(decoded){
         res.json({res: 'authorized'})
+        next()
       }else{
         res.status(403).json({res: 'Não autorizado.'})
       }
 
     })
 
+    }
   }
 }
 
@@ -37,5 +46,6 @@ const extractToken = (req) =>{
   }
   return tkr
 }
+
 
 module.exports= {handleAuthorization}

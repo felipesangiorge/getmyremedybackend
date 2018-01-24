@@ -37,10 +37,10 @@ module.exports = function (server) {
 
  })
 
-//TASKLIST
+//Remedys
   const remedys = require('../api/remedys/remedys')
 
-  //TASKLIST_GET
+
   router.route('/remedys/remedys').get(remedys.getRemedys)
 
   router.route('/remedys/remedysMenu').get(remedys.getRemedysMenu)
@@ -56,11 +56,23 @@ module.exports = function (server) {
   }})
 
 
-  //Authorization_Create-Remedy
-/*  router.use('/registerNewRemedy',(req,res,next) =>{
-    auth.handleAuthorization
-  })*/
-  router.use('/registerNewRemedy',auth.handleAuthorization)
+  router.use('/remedys/registerNewRemedy',auth.handleAuthorization, (req,res) => {
+    console.log(req.body.idtb_remedy_by_user)
+
+
+    remedys.verifyUserRemedyId(req.body.idtb_remedy_by_user, function(err, rows) {
+          if (rows.length > 0){
+            console.log(rows[0].idtb_users)
+            remedys.setRemedyByParams(req.body,rows[0].idtb_users)
+            console.log("fim")
+
+          }
+          else{
+
+           }
+      })
+
+  })
 
 //  const auth = require('../api/login/auth')
 //  server.use('/registerNewRemedy',auth)
