@@ -20,7 +20,6 @@ module.exports = function (server) {
         user_password:req.body.des_password
     }
 
-    console.log(obj)
     login.getLoginUser(obj, function(err, rows) {
          if (rows.length > 0){
 
@@ -34,6 +33,38 @@ module.exports = function (server) {
             res.status(403).send({res: "login-access-fail"})
           }
      })
+
+ })
+
+ //REGISTER
+ const register= require('../api/register/register')
+
+ router.post('/register',(req,res,next)=>{
+
+   var obj ={nom_name:req.body.nom_name,
+              des_mail:req.body.des_mail,
+              des_address:req.body.des_address,
+              des_city:req.body.des_city,
+              des_state:req.body.des_state,
+              num_cep:req.body.num_cep,
+              num_phone:req.body.num_phone,
+              des_password:req.body.des_password}
+
+
+    register.getVerifyIfUserExists(obj.des_mail,function(err,rows) {
+        console.log(rows.length)
+
+        if(rows.length > 0){
+
+            res.status(401).json({res: "e-mail já cadastrado, forneça outro."})
+
+        }else{
+            console.log("saiu do if")
+            register.setRegisterNewUser(obj)
+            res.send({res: "Usuário registrado com sucesso"})
+        }
+
+    })
 
  })
 

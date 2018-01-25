@@ -27,14 +27,14 @@ function queryGet(sqlQry,res){
 }
 
 function queryFunction(sqlQry, cb) {
+  console.log(sqlQry)
   connection.query(sqlQry, cb)
-
 
 }
 
 function query(sqlQry,res){
   connection.query(sqlQry,function (err,results,fields) {
-    console.log(sqlQry)
+
     if(err){
 
       return err
