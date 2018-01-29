@@ -2,7 +2,7 @@ const con = require('../../config/database')
 
 
 function getRemedys(req,res){
-  return con.queryGet('SELECT * FROM TB_remedys',res)
+  return con.queryGet('SELECT * FROM tb_remedys',res)
 }
 
 function getRemedysMenu(req,res){
