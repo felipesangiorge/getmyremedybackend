@@ -10,7 +10,7 @@ module.exports = function (server) {
   server.use('/api',router)
 
 
-//LOGIN
+//LOGIN-----------------------------------------------------------------------------------------------------------------
  const login= require('../api/login/login')
 
 
@@ -47,25 +47,9 @@ module.exports = function (server) {
 
     })
 
-/*   login.getLoginUser(obj, function(err, rows) {
-         if (rows.length > 0){
-
-
-
-        const tkr = token.sign({sub:obj.user_mail,iss:"gmr-api"},env.secret)
-
-           res.send({res : "login-access-success",
-                    user_mail:obj.user_mail,
-                    accessToken:tkr})
-         }
-         else{
-            res.status(403).send({res: "login-access-fail"})
-          }
-     }) */
-
  })
 
- //REGISTER
+ //REGISTER-----------------------------------------------------------------------------------------------------------
  const register= require('../api/register/register')
 
  router.post('/register',(req,res,next)=>{
@@ -92,7 +76,7 @@ module.exports = function (server) {
             res.status(401).json({res: "e-mail já cadastrado, forneça outro."})
 
         }else{
-            console.log("saiu do if")
+
             register.setRegisterNewUser(obj)
             res.send({res: "Usuário registrado com sucesso"})
         }
@@ -101,7 +85,7 @@ module.exports = function (server) {
 
  })
 
-//Remedys
+//Remedys----------------------------------------------------------------------------------------------------------------
   const remedys = require('../api/remedys/remedys')
 
 
@@ -121,19 +105,65 @@ module.exports = function (server) {
 
 
   router.use('/remedys/registerNewRemedy',auth.handleAuthorization, (req,res) => {
-    console.log(req.body.idtb_remedy_by_user)
-
 
     remedys.verifyUserRemedyId(req.body.idtb_remedy_by_user, function(err, rows) {
           if (rows.length > 0){
-            console.log(rows[0].idtb_users)
+
             remedys.setRemedyByParams(req.body,rows[0].idtb_users)
-            console.log("fim")
 
           }
           else{
 
            }
+      })
+
+  })
+
+  //RemedysComment------------------------------------------------------------------------------------------------------------
+  const remedysComment = require("../api/remedys/remedysComments")
+
+  var user_id
+  var remedysMenu_id
+
+  router.post('/remedys/comments',auth.handleAuthorization, (req,res,next)=>{
+      var obj = {
+                    des_comment:req.body.des_comment,
+                    des_date: req.body.des_date,
+                    des_remedy_name: req.body.des_remedy_name,
+                    des_remedy_dosage:req.body.des_remedy_dosage,
+                    user_mail:req.body.user_mail
+      }
+
+      remedysComment.getUserId(obj.user_mail,function(err,rows) {
+          if(rows.length > 0){
+            user_id = rows[0].idtb_users
+
+          }else{
+            res.status(403).send({res: "login-access-fail"})
+          }
+      })
+      remedysComment.getRemedysMenuId(obj.des_remedy_name,function(err,rows) {
+        if(rows.length > 0){
+
+          remedysMenu_id = rows[0].idtb_remedys_menu
+
+        }else{
+
+          res.status(403).send({res: "login-access-fail"})
+        }
+
+      })
+
+      remedysComment.setRemedysCommentsOfRemedy(obj,user_id,remedysMenu_id,function(err,rows) {
+        if(rows.length > 0){
+
+          res.json({res: "success"})
+
+        }else{
+
+          res.status(403).send({res: "login-access-fail"})
+        }
+
       })
 
   })
