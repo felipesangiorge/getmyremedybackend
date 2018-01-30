@@ -2,6 +2,7 @@ const express= require('express')
 const token = require ('jsonwebtoken')
 const auth = require ('../api/login/auth')
 const env = require('../.env')
+const bcrypt = require('bcrypt')
 
 module.exports = function (server) {
 
@@ -15,13 +16,41 @@ module.exports = function (server) {
 
  router.post('/login',(req,res,next)=>{
 
-    var obj = {
-        user_mail:req.body.des_mail,
-        user_password:req.body.des_password
-    }
+   var passwordsMatch
 
-    login.getLoginUser(obj, function(err, rows) {
+   var obj = {
+       user_mail:req.body.des_mail,
+       user_password:req.body.des_password,
+   }
+
+    login.getUserPassword(obj.user_mail,function (err,rows) {
+      if(rows.length > 0){
+
+        if(bcrypt.compareSync(obj.user_password,rows[0].des_password)){
+
+          const tkr = token.sign({sub:obj.user_mail,iss:"gmr-api"},env.secret)
+
+             res.send({res : "login-access-success",
+                      user_mail:obj.user_mail,
+                      accessToken:tkr})
+
+        }else{
+          res.status(403).send({res: "login-access-fail"})
+        }
+
+      }else{
+
+          res.status(403).send({res: "login-access-fail"})
+      }
+
+
+
+    })
+
+/*   login.getLoginUser(obj, function(err, rows) {
          if (rows.length > 0){
+
+
 
         const tkr = token.sign({sub:obj.user_mail,iss:"gmr-api"},env.secret)
 
@@ -32,7 +61,7 @@ module.exports = function (server) {
          else{
             res.status(403).send({res: "login-access-fail"})
           }
-     })
+     }) */
 
  })
 
@@ -41,6 +70,10 @@ module.exports = function (server) {
 
  router.post('/register',(req,res,next)=>{
 
+   var salt = bcrypt.genSaltSync(10)
+   var hash = bcrypt.hashSync(req.body.des_password,salt)
+
+
    var obj ={nom_name:req.body.nom_name,
               des_mail:req.body.des_mail,
               des_address:req.body.des_address,
@@ -48,7 +81,7 @@ module.exports = function (server) {
               des_state:req.body.des_state,
               num_cep:req.body.num_cep,
               num_phone:req.body.num_phone,
-              des_password:req.body.des_password}
+              des_password:hash}
 
 
     register.getVerifyIfUserExists(obj.des_mail,function(err,rows) {
