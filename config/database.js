@@ -34,9 +34,9 @@ function queryFunction(sqlQry, cb) {
 
 function query(sqlQry,res){
   connection.query(sqlQry,function (err,results,fields) {
-
+    console.log(sqlQry)
     if(err){
-
+      console.log(err)
       return err
 
     }else{

@@ -122,10 +122,16 @@ module.exports = function (server) {
   //RemedysComment------------------------------------------------------------------------------------------------------------
   const remedysComment = require("../api/remedys/remedysComments")
 
-  var user_id
-  var remedysMenu_id
+  router.get('/remedys/:id?/comments',(req,res) =>{
+    console.log(req.params.id)
+    if(req.params.id){
+    return remedysComment.getRemedysCommentsOfRemedy(req.params.id,res)
+  }})
 
   router.post('/remedys/comments',auth.handleAuthorization, (req,res,next)=>{
+    var user_id
+    var remedysMenu_id
+
       var obj = {
                     des_comment:req.body.des_comment,
                     des_date: req.body.des_date,
@@ -146,6 +152,7 @@ module.exports = function (server) {
         if(rows.length > 0){
 
           remedysMenu_id = rows[0].idtb_remedys_menu
+          remedysComment.setRemedysCommentsOfRemedy(obj,user_id,remedysMenu_id)
 
         }else{
 
@@ -154,17 +161,9 @@ module.exports = function (server) {
 
       })
 
-      remedysComment.setRemedysCommentsOfRemedy(obj,user_id,remedysMenu_id,function(err,rows) {
-        if(rows.length > 0){
 
-          res.json({res: "success"})
 
-        }else{
 
-          res.status(403).send({res: "login-access-fail"})
-        }
-
-      })
 
   })
 

@@ -9,7 +9,10 @@ return con.queryFunction(`SELECT idtb_remedys_menu FROM tb_remedys_menu WHERE de
 }
 
 function getRemedysCommentsOfRemedy(req,res){
-  return con.queryGet('SELECT * FROM tb_remedys',res)
+  return con.queryGet(`SELECT tb_users.nom_name,tb_remedys_comments.des_comment,tb_remedys_comments.des_date FROM tb_remedys_comments
+INNER JOIN tb_users  ON tb_remedys_comments.idfk_users = tb_users.idtb_users
+INNER JOIN tb_remedys_menu ON tb_remedys_comments.idfk_remedys_menu = idtb_remedys_menu
+WHERE tb_remedys_menu.des_name like '${req}'`,res)
 }
 
 function setRemedysCommentsOfRemedy(req,user_id,remedysMenu_id,res) {
@@ -22,7 +25,7 @@ function setRemedysCommentsOfRemedy(req,user_id,remedysMenu_id,res) {
                           VALUES ('${req.des_comment}',
                                   '${req.des_date}',
                                   ${remedysMenu_id},
-                                  ${user_id}`,res)
+                                  ${user_id})`,res)
 
 }
 
