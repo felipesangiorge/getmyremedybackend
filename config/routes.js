@@ -105,17 +105,44 @@ module.exports = function (server) {
 
 
   router.use('/remedys/registerNewRemedy',auth.handleAuthorization, (req,res) => {
+    var user_id
+    console.log(req.body)
 
-    remedys.verifyUserRemedyId(req.body.idtb_remedy_by_user, function(err, rows) {
-          if (rows.length > 0){
+    remedys.getRemedysByMenuIdFunction(req.body.des_name,req.body.des_dosage,function (err,rows) {
+          if(rows.length > 0){
 
-            remedys.setRemedyByParams(req.body,rows[0].idtb_users)
+            remedys.verifyUserRemedyId(req.body.idtb_remedy_by_user, function(err, rows) {
+                  if (rows.length > 0){
+
+
+                    user_id = rows[0].idtb_users
+                    remedys.setRemedyByParams(req.body,user_id)
+
+                  }
+                  else{
+                    res.send("Erro ao cadastrar")
+
+                   }
+              })
+
+          }else{
+
+            remedys.setRemedyMenuByParams(req.body)
+            remedys.verifyUserRemedyId(req.body.idtb_remedy_by_user, function(err, rows) {
+                  if (rows.length > 0){
+
+                    user_id = rows[0].idtb_users
+                    remedys.setRemedyByParams(req.body,user_id)
+
+                  }
+                  else{
+
+                    res.send("Erro ao cadastrar")
+                   }
+              })
 
           }
-          else{
-
-           }
-      })
+    })
 
   })
 

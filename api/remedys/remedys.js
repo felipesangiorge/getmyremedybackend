@@ -13,6 +13,10 @@ function getRemedysByMenuId(id,res){
     return con.queryGet(`SELECT * FROM tb_remedys_menu WHERE des_name like "${id}"`,res)
 }
 
+function getRemedysByMenuIdFunction(name,dosage,res){
+    return con.queryFunction(`SELECT * FROM tb_remedys_menu WHERE des_name like "${name}" AND des_dosage like "${dosage}"`,res)
+}
+
 function getRemedysBySameName(id,res){
     return con.queryGet(`SELECT * FROM tb_remedys
                         INNER JOIN tb_users  ON tb_remedys.idtb_remedy_by_user   = tb_users.idtb_users
@@ -23,8 +27,18 @@ function verifyUserRemedyId(idtb_remedy_by_user,cb){
   return con.queryFunction(`SELECT idtb_users FROM tb_users WHERE des_mail like "${idtb_remedy_by_user}"`,cb)
 }
 
-function verifyTaskListById(id,cb){
-  return con.queryFunction(`SELECT * FROM TB_tasklist WHERE cod_idtasklist = ${id}`,cb)
+function setRemedyMenuByParams(req,res) {
+  return con.query(`INSERT INTO tb_remedys_menu          (des_name,
+                                                          des_dosage,
+                                                          des_category,
+                                                          des_description,
+                                                          des_imagePath)
+
+                          VALUES ('${req.des_name}',
+                                  '${req.des_dosage}',
+                                  '${req.des_category}',
+                                  '${req.des_description}',
+                                  'assets/img/remedys/remedy.jpg')`,res)
 }
 
 function setRemedyByParams(req,iduser,res) {
@@ -62,5 +76,5 @@ function deleteTaskListByParams(req,res){
 }
 
 module.exports = {getRemedys,getRemedysByMenuId,getRemedysBySameName,
-                  verifyUserRemedyId,verifyTaskListById,getRemedysMenu,
-                  setRemedyByParams,updateTaskListByParams,deleteTaskListByParams}
+                  verifyUserRemedyId,setRemedyMenuByParams,getRemedysMenu,
+                  setRemedyByParams,getRemedysByMenuIdFunction,deleteTaskListByParams}
