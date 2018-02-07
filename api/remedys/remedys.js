@@ -10,7 +10,7 @@ function getRemedysMenu(req,res){
 }
 
 function getRemedysByMenuId(id,res){
-    return con.queryGet(`SELECT * FROM tb_remedys_menu WHERE des_name like "${id}"`,res)
+    return con.queryGet(`SELECT * FROM tb_remedys_menu WHERE idtb_remedys_menu = ${id}`,res)
 }
 
 function getRemedysByMenuIdFunction(name,dosage,res){
@@ -18,9 +18,11 @@ function getRemedysByMenuIdFunction(name,dosage,res){
 }
 
 function getRemedysBySameName(id,res){
-    return con.queryGet(`SELECT * FROM tb_remedys
-                        INNER JOIN tb_users  ON tb_remedys.idtb_remedy_by_user   = tb_users.idtb_users
-                        WHERE des_name like "${id}" `,res)
+    return con.queryGet(`SELECT  tb_remedys.des_name,tb_remedys.des_validate ,tb_remedys.des_imagePath,
+                        tb_users.nom_name, tb_users.des_city, tb_users.des_mail, tb_users.num_phone FROM tb_remedys_menu
+                        INNER JOIN tb_remedys  ON tb_remedys.idfk_remedys_menu  = tb_remedys_menu.idtb_remedys_menu
+                        INNER JOIN tb_users ON tb_remedys.idtb_remedy_by_user = tb_users.idtb_users
+                        WHERE tb_remedys.idfk_remedys_menu = ${id}`,res)
 }
 
 function verifyUserRemedyId(idtb_remedy_by_user,cb){
@@ -41,7 +43,7 @@ function setRemedyMenuByParams(req,res) {
                                   'assets/img/remedys/remedy.jpg')`,res)
 }
 
-function setRemedyByParams(req,iduser,res) {
+function setRemedyByParams(req,iduser,remedy_menu_id,res) {
 
   return con.query(`INSERT INTO tb_remedys       (des_name,
                                                     des_category,
@@ -49,7 +51,8 @@ function setRemedyByParams(req,iduser,res) {
                                                     des_validate,
                                                     des_description,
                                                     des_imagePath,
-                                                    idtb_remedy_by_user)
+                                                    idtb_remedy_by_user,
+                                                    idfk_remedys_menu)
 
                           VALUES ('${req.des_name}',
                                   '${req.des_category}',
@@ -57,7 +60,8 @@ function setRemedyByParams(req,iduser,res) {
                                   '${req.des_validate}',
                                   '${req.des_description}',
                                   '${req.des_imagePath}',
-                                  ${iduser})`,res)
+                                  ${iduser},
+                                  ${remedy_menu_id})`,res)
 
 }
 

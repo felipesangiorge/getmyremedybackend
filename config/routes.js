@@ -99,6 +99,7 @@ module.exports = function (server) {
   }})
 
   router.get('/remedys/:id?',(req,res) =>{
+
     if(req.params.id){
     return remedys.getRemedysBySameName(req.params.id,res)
   }})
@@ -106,17 +107,19 @@ module.exports = function (server) {
 
   router.use('/remedys/registerNewRemedy',auth.handleAuthorization, (req,res) => {
     var user_id
-    console.log(req.body)
+    var remedy_menu_id
+
 
     remedys.getRemedysByMenuIdFunction(req.body.des_name,req.body.des_dosage,function (err,rows) {
           if(rows.length > 0){
+            remedy_menu_id = rows[0].idtb_remedys_menu
 
             remedys.verifyUserRemedyId(req.body.idtb_remedy_by_user, function(err, rows) {
                   if (rows.length > 0){
 
 
                     user_id = rows[0].idtb_users
-                    remedys.setRemedyByParams(req.body,user_id)
+                    remedys.setRemedyByParams(req.body,user_id,remedy_menu_id)
 
                   }
                   else{
@@ -128,18 +131,22 @@ module.exports = function (server) {
           }else{
 
             remedys.setRemedyMenuByParams(req.body)
+
             remedys.verifyUserRemedyId(req.body.idtb_remedy_by_user, function(err, rows) {
-                  if (rows.length > 0){
+                          if (rows.length > 0){
+                              user_id = rows[0].idtb_users
 
-                    user_id = rows[0].idtb_users
-                    remedys.setRemedyByParams(req.body,user_id)
+                    remedys.getRemedysByMenuIdFunction(req.body.des_name,req.body.des_dosage, function(err, rows) {
+                          if (rows.length > 0){
 
-                  }
-                  else{
+                            remedys.setRemedyByParams(req.body,user_id,rows[0].idtb_remedys_menu)
 
-                    res.send("Erro ao cadastrar")
-                   }
-              })
+                          }else{res.send("Erro ao cadastrar")}
+                      })
+
+                  }else{res.send("Erro ao cadastrar")
+                }
+            })
 
           }
     })
@@ -150,7 +157,7 @@ module.exports = function (server) {
   const remedysComment = require("../api/remedys/remedysComments")
 
   router.get('/remedys/:id?/comments',(req,res) =>{
-    console.log(req.params.id)
+
     if(req.params.id){
     return remedysComment.getRemedysCommentsOfRemedy(req.params.id,res)
   }})
