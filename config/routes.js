@@ -49,7 +49,7 @@ module.exports = function (server) {
 
  })
 
- //REGISTER-----------------------------------------------------------------------------------------------------------
+ //REGISTER NEW USER-----------------------------------------------------------------------------------------------------------
  const register= require('../api/register/register')
 
  router.post('/register',(req,res,next)=>{
@@ -82,6 +82,47 @@ module.exports = function (server) {
         }
 
     })
+
+ })
+ //EDIT USER -----------------------------------------------------------------------------------------------------------
+  const editUser= require('../api/register/editUser')
+
+router.get('/users/remedys/:id?',(req,res) =>{
+  var user_id
+
+    if(req.params.id){
+
+      remedysComment.getUserId(req.params.id,function(err,rows) {
+          if(rows.length > 0){
+            user_id = rows[0].idtb_users
+            return remedys.getRemedysByUser(user_id,res)
+
+          }else{
+            res.status(403).send({res: "falha ao obter dados"})
+          }
+      })
+
+  }})
+
+ router.use('/users/edit',auth.handleAuthorization,(req,res,next)=>{
+
+   var salt = bcrypt.genSaltSync(10)
+   var hash = bcrypt.hashSync(req.body.des_password,salt)
+
+   editUser.getVerifyIfUserExists(req.body.des_mail,function(err,rows) {
+       console.log(rows.length)
+
+       if(rows.length > 0){
+
+           editUser.setEditUser(req.body,hash)
+           //res.send({res: "Usuário alterado com sucesso"})
+
+       }else{
+            res.status(401).json({res: "Usuário não existe."})
+       }
+
+   })
+
 
  })
 

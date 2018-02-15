@@ -13,7 +13,7 @@ function connectionCheck(){
     if(err){
       console.log("-------------------------------------------------------")
       console.log(err)
-      connection.end()
+
     }else{
     console.log("conectado")
     }
@@ -27,7 +27,7 @@ function queryGet(sqlQry,res){
   connection.query(sqlQry,function (err,results,fields) {
     if(err){
       res.json(err)
-      connection.end()
+
     }else{
       res.json(results)
     }
@@ -48,7 +48,7 @@ function query(sqlQry,res){
     if(err){
       console.log(err)
       return err
-      connection.end()
+    
     }else{
 
       return results

@@ -5,6 +5,11 @@ function getRemedys(req,res){
   return con.queryGet('SELECT * FROM tb_remedys',res)
 }
 
+function getRemedysByUser(req,res){
+    return con.queryGet(`SELECT * FROM tb_remedys INNER JOIN tb_users ON tb_remedys.idtb_remedy_by_user = tb_users.idtb_users
+                         WHERE idtb_remedy_by_user = ${req}`,res)
+}
+
 function getRemedysMenu(req,res){
   return con.queryGet('SELECT * FROM tb_remedys_menu',res)
 }
@@ -65,20 +70,9 @@ function setRemedyByParams(req,iduser,remedy_menu_id,res) {
 
 }
 
-function updateTaskListByParams(req,res){
-  return con.query(`UPDATE db_lifeapp.tb_tasklist SET des_nom_tasklist='${req.taskListName}',
-                                                  des_type_tasklist='${req.taskListType}',
-                                                  des_tasklist='${req.taskListText}',
-                                                  des_date='${req.date}'
 
 
-                                WHERE cod_idtasklist = ${req.tasklistId}`)
-}
 
-function deleteTaskListByParams(req,res){
-  return con.query(`DELETE FROM tb_tasklist where cod_idtasklist = ${req.idTasklist}`)
-}
-
-module.exports = {getRemedys,getRemedysByMenuId,getRemedysBySameName,
+module.exports = {getRemedys,getRemedysByMenuId,getRemedysBySameName,getRemedysByUser,
                   verifyUserRemedyId,setRemedyMenuByParams,getRemedysMenu,
-                  setRemedyByParams,getRemedysByMenuIdFunction,deleteTaskListByParams}
+                  setRemedyByParams,getRemedysByMenuIdFunction}
