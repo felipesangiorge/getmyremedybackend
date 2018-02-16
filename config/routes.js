@@ -17,6 +17,7 @@ module.exports = function (server) {
  router.post('/login',(req,res,next)=>{
 
    var passwordsMatch
+   var user_name
 
    var obj = {
        user_mail:req.body.des_mail,
@@ -26,12 +27,15 @@ module.exports = function (server) {
     login.getUserPassword(obj.user_mail,function (err,rows) {
       if(rows.length > 0){
 
+        user_name = rows[0].nom_name
+
         if(bcrypt.compareSync(obj.user_password,rows[0].des_password)){
 
           const tkr = token.sign({sub:obj.user_mail,iss:"gmr-api"},env.secret)
 
              res.send({res : "login-access-success",
                       user_mail:obj.user_mail,
+                      nom_name:user_name,
                       accessToken:tkr})
 
         }else{
@@ -87,6 +91,13 @@ module.exports = function (server) {
  //EDIT USER -----------------------------------------------------------------------------------------------------------
   const editUser= require('../api/register/editUser')
 
+/*------------------------------------------------------------------
+router.get('/users/:id?',(req,res)=>{
+  if(req.params.id){
+  return editUser.getUser(req.params.id,res)
+} })
+PEGAR DADOS DO USUARIO
+------------------------------------------------------------------*/
 router.get('/users/remedys/:id?',(req,res) =>{
   var user_id
 
@@ -103,6 +114,24 @@ router.get('/users/remedys/:id?',(req,res) =>{
       })
 
   }})
+
+  router.delete('/users/remedys/:id?',auth.handleAuthorization,(req,res) =>{
+
+    console.log(req.params.id)
+      if(req.params.id){
+
+        remedys.getRemedysById(req.params.id,function(err,rows) {
+            if(rows.length > 0){
+
+              return remedys.deleteUserRemedy(req.params.id,res)
+
+            }else{
+              res.status(403).send({res: "remédio não existe"})
+            }
+        })
+
+    }
+  })
 
  router.use('/users/edit',auth.handleAuthorization,(req,res,next)=>{
 
@@ -126,7 +155,7 @@ router.get('/users/remedys/:id?',(req,res) =>{
 
  })
 
-//Remedys----------------------------------------------------------------------------------------------------------------
+ //Remedys----------------------------------------------------------------------------------------------------------------
   const remedys = require('../api/remedys/remedys')
 
 
@@ -171,22 +200,34 @@ router.get('/users/remedys/:id?',(req,res) =>{
 
           }else{
 
-            remedys.setRemedyMenuByParams(req.body)
+        remedys.setRemedyMenuByParams(req.body,function(err,rows) {
 
-            remedys.verifyUserRemedyId(req.body.idtb_remedy_by_user, function(err, rows) {
-                          if (rows.length > 0){
-                              user_id = rows[0].idtb_users
+              if (rows.length > 0){
+                  console.log("err")
+              }else{
 
-                    remedys.getRemedysByMenuIdFunction(req.body.des_name,req.body.des_dosage, function(err, rows) {
-                          if (rows.length > 0){
+                remedys.verifyUserRemedyId(req.body.idtb_remedy_by_user, function(err, rows) {
+                                if (rows.length > 0){
 
-                            remedys.setRemedyByParams(req.body,user_id,rows[0].idtb_remedys_menu)
+                                    user_id = rows[0].idtb_users
 
-                          }else{res.send("Erro ao cadastrar")}
-                      })
 
-                  }else{res.send("Erro ao cadastrar")
-                }
+                                    remedys.getRemedysByMenuIdFunction(req.body.des_name,req.body.des_dosage, function(err,rows) {
+                                          if (rows.length > 0){
+
+                                            remedys.setRemedyByParams(req.body,user_id,rows[0].idtb_remedys_menu)
+
+                                          }else{
+                                            console.log("não achou remedio pelo id do menu")
+                                          }
+                                      })
+
+                        }else{
+                          res.send("Erro ao cadastrar")
+                      }
+                  })
+              }
+
             })
 
           }

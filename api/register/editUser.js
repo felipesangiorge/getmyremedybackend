@@ -2,9 +2,10 @@ const con = require('../../config/database')
 
 
 function getVerifyIfUserExists(req,res){
-
   return con.queryFunction(`SELECT * FROM tb_users WHERE des_mail like '${req}'`,res)
-
+}
+function getUser(req,res) {
+  return con.queryGet(`SELECT * FROM tb_users WHERE des_mail like '${req}'`,res)
 }
 
 function setEditUser(req,password,res){
@@ -17,4 +18,4 @@ function setEditUser(req,password,res){
 }
 
 
-module.exports = {setEditUser,getVerifyIfUserExists}
+module.exports = {setEditUser,getVerifyIfUserExists,getUser}

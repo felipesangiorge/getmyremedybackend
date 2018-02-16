@@ -5,9 +5,17 @@ function getRemedys(req,res){
   return con.queryGet('SELECT * FROM tb_remedys',res)
 }
 
+function getRemedysById(req,res){
+  return con.queryFunction(`SELECT * FROM tb_remedys WHERE idtb_remedys = ${req}`,res)
+}
+
 function getRemedysByUser(req,res){
     return con.queryGet(`SELECT * FROM tb_remedys INNER JOIN tb_users ON tb_remedys.idtb_remedy_by_user = tb_users.idtb_users
                          WHERE idtb_remedy_by_user = ${req}`,res)
+}
+
+function deleteUserRemedy(req,res){
+    return con.queryFunction(`DELETE FROM tb_remedys WHERE idtb_remedys = ${req} `,res)
 }
 
 function getRemedysMenu(req,res){
@@ -35,7 +43,7 @@ function verifyUserRemedyId(idtb_remedy_by_user,cb){
 }
 
 function setRemedyMenuByParams(req,res) {
-  return con.query(`INSERT INTO tb_remedys_menu          (des_name,
+  return con.queryFunction(`INSERT INTO tb_remedys_menu          (des_name,
                                                           des_dosage,
                                                           des_category,
                                                           des_description,
@@ -50,7 +58,7 @@ function setRemedyMenuByParams(req,res) {
 
 function setRemedyByParams(req,iduser,remedy_menu_id,res) {
 
-  return con.query(`INSERT INTO tb_remedys       (des_name,
+  return con.queryFunction(`INSERT INTO tb_remedys       (des_name,
                                                     des_category,
                                                     des_dosage,
                                                     des_validate,
@@ -73,6 +81,14 @@ function setRemedyByParams(req,iduser,remedy_menu_id,res) {
 
 
 
-module.exports = {getRemedys,getRemedysByMenuId,getRemedysBySameName,getRemedysByUser,
-                  verifyUserRemedyId,setRemedyMenuByParams,getRemedysMenu,
-                  setRemedyByParams,getRemedysByMenuIdFunction}
+module.exports = {getRemedys,
+                  getRemedysByMenuId,
+                  getRemedysByMenuIdFunction,
+                  getRemedysBySameName,
+                  getRemedysByUser,
+                  getRemedysById,
+                  verifyUserRemedyId,
+                  getRemedysMenu,
+                  setRemedyMenuByParams,
+                  setRemedyByParams,
+                  deleteUserRemedy}

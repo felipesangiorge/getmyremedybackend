@@ -36,19 +36,19 @@ function queryGet(sqlQry,res){
 }
 
 function queryFunction(sqlQry,cb) {
-  console.log("Query: "+sqlQry)
-  connection.query(sqlQry, cb)
+  console.log("QueryFunction: "+sqlQry)
+  connection.query(sqlQry,cb)
 
 
 }
 
 function query(sqlQry,res){
   connection.query(sqlQry,function (err,results,fields) {
-    console.log(sqlQry)
+    console.log("Query: "+sqlQry)
     if(err){
       console.log(err)
       return err
-    
+
     }else{
 
       return results

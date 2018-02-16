@@ -1,7 +1,7 @@
 const con = require('../../config/database')
 
 function getUserPassword(req,res) {
-  return con.queryFunction(`SELECT des_password FROM tb_users WHERE des_mail like "${req}"` ,res)
+  return con.queryFunction(`SELECT des_password,nom_name FROM tb_users WHERE des_mail like "${req}"` ,res)
 }
 
 function getLoginUser(req,res){
