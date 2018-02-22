@@ -98,10 +98,48 @@ router.get('/users/:id?',(req,res)=>{
 } })
 PEGAR DADOS DO USUARIO
 ------------------------------------------------------------------*/
-router.use('/users/verifyToken',auth.handleAuthorization,(req,res,next)=>{
+router.use('/users/verifyToken',(req,res,next)=>{
 
-    res.json("access-token-valid")
+  if(req.method == "OPTIONS"){
 
+    res.json({res:"ok"})
+
+  }else{
+
+
+    let tkr = undefined
+    let splited
+
+    if(req.body.headers && req.body.headers.Authorization){
+      splited = req.body.headers.Authorization.toString()
+      const parts = [] = splited.split(' ')
+
+      if(parts.length == 2 && parts[0] == 'Bearer'){
+        tkr = parts[1]
+      }
+    }
+
+    if(!tkr){
+
+      res.setHeader('WWW-Authenticate','Bearer token_type="JWT"')
+      res.status(401).json({res: "Você precisa se autenticar."})
+
+    }else{
+
+      token.verify(tkr,env.secret,(error,decoded)=>{
+
+        if(decoded){
+          res.json({res: 'authorized'})
+          next()
+        }else{
+          res.status(403).json({res: 'Não autorizado.'})
+        }
+
+      })
+
+      }
+
+    }
 })
 
 router.get('/users/remedys/:id?',(req,res) =>{

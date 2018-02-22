@@ -48,4 +48,4 @@ const extractToken = (req) =>{
 }
 
 
-module.exports= {handleAuthorization}
+module.exports= {handleAuthorization,extractToken}
