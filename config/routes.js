@@ -31,7 +31,7 @@ module.exports = function (server) {
 
         if(bcrypt.compareSync(obj.user_password,rows[0].des_password)){
 
-          const tkr = token.sign({sub:obj.user_mail,iss:"gmr-api",exp: Math.floor(Date.now() / 1000) + (60 * 5)},env.secret)
+          const tkr = token.sign({sub:obj.user_mail,iss:"gmr-api",exp: Math.floor(Date.now() / 1000) + (60 * 60)},env.secret)
 
              res.send({res : "login-access-success",
                       user_mail:obj.user_mail,

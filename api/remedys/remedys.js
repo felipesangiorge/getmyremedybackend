@@ -35,7 +35,7 @@ function getRemedysBySameName(id,res){
                         tb_users.nom_name, tb_users.des_city, tb_users.des_mail, tb_users.num_phone FROM tb_remedys_menu
                         INNER JOIN tb_remedys  ON tb_remedys.idfk_remedys_menu  = tb_remedys_menu.idtb_remedys_menu
                         INNER JOIN tb_users ON tb_remedys.idtb_remedy_by_user = tb_users.idtb_users
-                        WHERE tb_remedys.idfk_remedys_menu = ${id}`,res)
+                        WHERE tb_remedys.idfk_remedys_menu = ${id} AND des_validate >= CURDATE()`,res)
 }
 
 function verifyUserRemedyId(idtb_remedy_by_user,cb){
