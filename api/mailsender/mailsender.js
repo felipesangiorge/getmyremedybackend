@@ -1,10 +1,12 @@
 const nodemailer = require('nodemailer')
 
 const transporter = nodemailer.createTransport({
-  service:'Gmail',
-    auth:{
-         user:"felipe.sangiorge@gmail.com",
-         pass:"MinhaSenha"
+  host: 'mail.getmyremedy.com.br',
+  port: 465,
+  secure: true,
+  auth:{
+         user:"no-reply@getmyremedy.com.br",
+         pass:"jy6QonwC-Xaj"
     },
     tls: {rejectUnauthorized:false}
 })
