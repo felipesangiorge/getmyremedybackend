@@ -38,6 +38,10 @@ function getRemedysBySameName(id,res){
                         WHERE tb_remedys.idfk_remedys_menu = ${id} AND des_validate >= CURDATE()`,res)
 }
 
+function deleteExpiredRemedys() {
+    con.query(`DELETE FROM tb_remedys WHERE des_validate < CURDATE()`)
+}
+
 function verifyUserRemedyId(idtb_remedy_by_user,cb){
   return con.queryFunction(`SELECT idtb_users FROM tb_users WHERE des_mail like "${idtb_remedy_by_user}"`,cb)
 }
@@ -87,8 +91,9 @@ module.exports = {getRemedys,
                   getRemedysBySameName,
                   getRemedysByUser,
                   getRemedysById,
-                  verifyUserRemedyId,
                   getRemedysMenu,
+                  verifyUserRemedyId,
                   setRemedyMenuByParams,
                   setRemedyByParams,
-                  deleteUserRemedy}
+                  deleteUserRemedy,
+                  deleteExpiredRemedys}

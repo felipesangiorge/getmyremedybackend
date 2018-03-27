@@ -3,6 +3,7 @@ const token = require ('jsonwebtoken')
 const auth = require ('../api/login/auth')
 const env = require('../.env')
 const bcrypt = require('bcrypt')
+const mailsender = require('../api/mailsender/mailsender')
 
 module.exports = function (server) {
 
@@ -50,6 +51,46 @@ module.exports = function (server) {
 
 
     })
+
+ })
+
+ router.post('/login/forgotPassword',(req,res,next)=>{
+  const editUser= require('../api/register/editUser')
+
+   editUser.getVerifyIfUserExists(req.body.des_mail,function (err,rows) {
+     if(rows.length > 0){
+
+       let newPassword = editUser.generatePassword()
+       console.log(newPassword)
+
+       var salt = bcrypt.genSaltSync(10)
+       var hash = bcrypt.hashSync(newPassword,salt)
+
+       editUser.setEditUserPassword(req.body.des_mail,hash)
+
+       var mailObj = {
+         from:'no-reply@getmyremedy.com.br',
+         to:`${req.body.des_mail}`,
+         subject:`GetMyRemedy: Nova Senha`,
+         html:`<h3> Ola ${rows[0].nom_name} ! </h3>
+               <p>  Conforme solicitado segue a nova senha: ${newPassword}
+               <p>  Lembrando que você pode alterar a senha a qualquer momento clicando em cima do seu e-mail quando estiver logado na aplicação</p>
+
+               <p> Qualquer duvida nos envie um email : suporte@getmyremedy.com.br</p>
+               <p> Será um prazer lhe atender.</p>
+
+               <small>Esse é um e-mail gerado automaticamente, favor não responder</small>`
+             }
+
+       mailsender.sendMail(mailObj)
+
+       res.json("Nova senha enviada por e-mail")
+
+     }else{
+       res.status(400).json("Error: O e-mail informado não existe")
+     }
+
+   })
 
  })
 
@@ -215,6 +256,7 @@ router.get('/users/remedys/:id?',(req,res) =>{
   router.get('/remedys/:id?',(req,res) =>{
 
     if(req.params.id){
+           remedys.deleteExpiredRemedys()
     return remedys.getRemedysBySameName(req.params.id,res)
   }})
 
@@ -223,7 +265,6 @@ router.get('/users/remedys/:id?',(req,res) =>{
     var user_id
     var remedy_menu_id
 
-
     remedys.getRemedysByMenuIdFunction(req.body.des_name,req.body.des_dosage,function (err,rows) {
           if(rows.length > 0){
             remedy_menu_id = rows[0].idtb_remedys_menu
@@ -231,6 +272,23 @@ router.get('/users/remedys/:id?',(req,res) =>{
             remedys.verifyUserRemedyId(req.body.idtb_remedy_by_user, function(err, rows) {
                   if (rows.length > 0){
 
+                    var mailObj = {
+                      from:'no-reply@getmyremedy.com.br',
+                      to:`${req.body.idtb_remedy_by_user}`,
+                      subject:`GetMyRemedy: Anúncio Criado`,
+                      html:`<h3> Ola ${req.body.nom_name} ! </h3>
+                            <p>  Seu anúncio do remédio ${req.body.des_name}/${req.body.des_dosage} foi criado com sucesso! </p>
+                            <p>  fique atento a data de validade: ${req.body.des_validate} pois o mesmo será excluido assim que a data for atingida.</p>
+
+                            <h3>  Informações adicionais: </h3>
+                            <p> Categoria: ${req.body.des_category}</p>
+                            <p> Descrição: ${req.body.des_description}</p>
+
+                            <p> Agradecemos a contribuição para tornarmos o mundo um lugar mais colaborativo e acessivel a todos!</p>
+                            <small>Esse é um e-mail gerado automaticamente, favor não responder</small>`
+                          }
+
+                    mailsender.sendMail(mailObj)
 
                     user_id = rows[0].idtb_users
                     remedys.setRemedyByParams(req.body,user_id,remedy_menu_id)
@@ -255,9 +313,29 @@ router.get('/users/remedys/:id?',(req,res) =>{
 
                                     user_id = rows[0].idtb_users
 
-
                                     remedys.getRemedysByMenuIdFunction(req.body.des_name,req.body.des_dosage, function(err,rows) {
+
                                           if (rows.length > 0){
+
+                                            var mailObj = {
+                                              from:'no-reply@getmyremedy.com.br',
+                                              to:`${req.body.idtb_remedy_by_user}`,
+                                              subject:`GetMyRemedy: Anúncio Criado`,
+                                              html:`<h3> Ola ${req.body.nom_name} ! </h3>
+                                                    <p>  Seu anúncio do remédio ${req.body.des_name}/${req.body.des_dosage} foi criado com sucesso! </p>
+                                                    <p>  fique atento a data de validade: ${req.body.des_validate} pois o mesmo será excluido assim que a data for atingida.</p>
+
+                                                    <h3>  Informações adicionais: </h3>
+                                                    <p> Categoria: ${req.body.des_category}</p>
+                                                    <p> Descrição: ${req.body.des_description}</p>
+
+                                                    <p> Seu remédio ainda não estava cadastrado em nossa base, por tanto foi criado uma nova categoria incluindo o seu remédio</p>
+
+                                                    <p> Agradecemos a contribuição para tornarmos o mundo um lugar mais colaborativo e acessivel a todos!</p>
+                                                    <small>Esse é um e-mail gerado automaticamente, favor não responder</small>`
+                                                  }
+
+                                            mailsender.sendMail(mailObj)
 
                                             remedys.setRemedyByParams(req.body,user_id,rows[0].idtb_remedys_menu)
 
