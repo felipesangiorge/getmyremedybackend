@@ -72,7 +72,7 @@ module.exports = function (server) {
          from:'no-reply@getmyremedy.com.br',
          to:`${req.body.des_mail}`,
          subject:`GetMyRemedy: Nova Senha`,
-         html:`<h3> Ola ${rows[0].nom_name} ! </h3>
+         html:`<h3> Olá ${rows[0].nom_name} ! </h3>
                <p>  Conforme solicitado segue a nova senha: ${newPassword}
                <p>  Lembrando que você pode alterar a senha a qualquer momento clicando em cima do seu e-mail quando estiver logado na aplicação</p>
 
@@ -276,7 +276,7 @@ router.get('/users/remedys/:id?',(req,res) =>{
                       from:'no-reply@getmyremedy.com.br',
                       to:`${req.body.idtb_remedy_by_user}`,
                       subject:`GetMyRemedy: Anúncio Criado`,
-                      html:`<h3> Ola ${req.body.nom_name} ! </h3>
+                      html:`<h3> Olá ${req.body.nom_name} ! </h3>
                             <p>  Seu anúncio do remédio ${req.body.des_name}/${req.body.des_dosage} foi criado com sucesso! </p>
                             <p>  fique atento a data de validade: ${req.body.des_validate} pois o mesmo será excluido assim que a data for atingida.</p>
 
@@ -321,7 +321,7 @@ router.get('/users/remedys/:id?',(req,res) =>{
                                               from:'no-reply@getmyremedy.com.br',
                                               to:`${req.body.idtb_remedy_by_user}`,
                                               subject:`GetMyRemedy: Anúncio Criado`,
-                                              html:`<h3> Ola ${req.body.nom_name} ! </h3>
+                                              html:`<h3> Olá ${req.body.nom_name} ! </h3>
                                                     <p>  Seu anúncio do remédio ${req.body.des_name}/${req.body.des_dosage} foi criado com sucesso! </p>
                                                     <p>  fique atento a data de validade: ${req.body.des_validate} pois o mesmo será excluido assim que a data for atingida.</p>
 
