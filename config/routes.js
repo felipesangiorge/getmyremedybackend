@@ -382,22 +382,24 @@ router.get('/users/remedys/:id?',(req,res) =>{
           if(rows.length > 0){
             user_id = rows[0].idtb_users
 
+            remedysComment.getRemedysMenuId(obj.des_remedy_name,function(err,rows) {
+              if(rows.length > 0){
+
+                remedysMenu_id = rows[0].idtb_remedys_menu
+                remedysComment.setRemedysCommentsOfRemedy(obj,user_id,remedysMenu_id)
+
+              }else{
+
+                res.status(403).send({res: "login-access-fail"})
+              }
+
+            })
+
           }else{
             res.status(403).send({res: "login-access-fail"})
           }
       })
-      remedysComment.getRemedysMenuId(obj.des_remedy_name,function(err,rows) {
-        if(rows.length > 0){
 
-          remedysMenu_id = rows[0].idtb_remedys_menu
-          remedysComment.setRemedysCommentsOfRemedy(obj,user_id,remedysMenu_id)
-
-        }else{
-
-          res.status(403).send({res: "login-access-fail"})
-        }
-
-      })
 
 
 
