@@ -122,6 +122,24 @@ module.exports = function (server) {
 
         }else{
 
+          var mailObj = {
+            from:'no-reply@getmyremedy.com.br',
+            to:`${obj.des_mail}`,
+            subject:`GetMyRemedy: Cadastro efetuado com sucesso!`,
+            html:`<h3> Olá ${obj.nom_name} ! </h3>
+                  <p>  Seu cadastro foi efetuado com sucesso! ficamos felizes em te receber </p>
+                  <p>  Com nossa aplicação você poderá escolher remedios no quais precisa de doação, inclusive contribuir com as outras pessoas.</p>
+                  <p>  Lembre-se de sempre solicitar a receita quando te pedirem a doação, e entregar a receita quando receber alguma. Somente um médico especializado pode indicar a medicação correta.</p>
+                  <p>  Nossa plataforma apenas ajuda a ligar quem precisa de doação com quem está disposto a doar, informando o medicamento e contato da pessoa, apenas e-mail, telefone, e cidade quaisquer outras informações não são passadas.</p>
+
+                  <p> Qualquer duvida nos envie um email : suporte@getmyremedy.com.br</p>
+                  <p> Será um prazer lhe atender.</p>
+
+                  <small>Esse é um e-mail gerado automaticamente, favor não responder</small>`
+                }
+
+                mailsender.sendMail(mailObj)
+
             register.setRegisterNewUser(obj)
             res.send({res: "Usuário registrado com sucesso"})
         }
