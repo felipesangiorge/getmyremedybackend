@@ -271,6 +271,13 @@ router.get('/users/remedys/:id?',(req,res) =>{
     return remedys.getRemedysByMenuId(req.params.id,res)
   }})
 
+  router.get('/remedys/search/remedyMenu/:id?',(req,res)=>{
+    if(req.params.id){
+      console.log(req.params.id)
+      return remedys.getRemedysByMenuName(req.params.id,res)
+    }
+  })
+
   router.get('/remedys/:id?',(req,res) =>{
 
     if(req.params.id){
