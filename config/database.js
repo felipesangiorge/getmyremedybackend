@@ -26,11 +26,11 @@ function queryGet(sqlQry,res){
   console.log(sqlQry)
   connection.query(sqlQry,function (err,results,fields) {
     if(err){
-        console.log(err)
+
       res.json(err)
 
     }else{
-      console.log(results)
+      
       res.json(results)
     }
   })
