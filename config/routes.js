@@ -271,6 +271,12 @@ router.get('/users/remedys/:id?',(req,res) =>{
     return remedys.getRemedysByMenuId(req.params.id,res)
   }})
 
+  router.get('/remedys/remedysMenu/category/:id?',(req,res)=> {
+    if(req.params.id){
+      return remedys.getRemedysByMenuCategory(req.params.id,res)
+    }
+  })
+
   router.get('/remedys/search/remedyMenu/:id?',(req,res)=>{
     if(req.params.id){
       console.log(req.params.id)
@@ -407,7 +413,7 @@ router.get('/users/remedys/:id?',(req,res) =>{
           if(rows.length > 0){
             user_id = rows[0].idtb_users
 
-            remedysComment.getRemedysMenuId(obj.des_remedy_name,function(err,rows) {
+            remedysComment.getRemedysMenuId(obj,function(err,rows) {
               if(rows.length > 0){
 
                 remedysMenu_id = rows[0].idtb_remedys_menu

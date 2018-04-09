@@ -5,7 +5,7 @@ function getUserId(req,res) {
 }
 
 function getRemedysMenuId(req,res) {
-return con.queryFunction(`SELECT idtb_remedys_menu FROM tb_remedys_menu WHERE des_name like '${req}'`,res)
+return con.queryFunction(`SELECT idtb_remedys_menu FROM tb_remedys_menu WHERE des_name like '${req.des_remedy_name}' AND des_dosage like '${req.des_remedy_dosage}'`,res)
 }
 
 function getRemedysCommentsOfRemedy(req,res){

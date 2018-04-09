@@ -26,6 +26,10 @@ function getRemedysByMenuId(id,res){
     return con.queryGet(`SELECT * FROM tb_remedys_menu WHERE idtb_remedys_menu = ${id}`,res)
 }
 
+function getRemedysByMenuCategory(id,res){
+    return con.queryGet(`SELECT * FROM tb_remedys_menu WHERE des_category like '${id}'`,res)
+}
+
 function getRemedysByMenuName(id,res){
     return con.queryGet(`SELECT * FROM tb_remedys_menu WHERE des_name like '%${id}%'`,res)
 }
@@ -93,6 +97,7 @@ function setRemedyByParams(req,iduser,remedy_menu_id,res) {
 module.exports = {getRemedys,
                   getRemedysByMenuId,
                   getRemedysByMenuName,
+                  getRemedysByMenuCategory,
                   getRemedysByMenuIdFunction,
                   getRemedysBySameName,
                   getRemedysByUser,
