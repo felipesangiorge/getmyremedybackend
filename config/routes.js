@@ -150,13 +150,13 @@ module.exports = function (server) {
  //EDIT USER -----------------------------------------------------------------------------------------------------------
   const editUser= require('../api/register/editUser')
 
-/*------------------------------------------------------------------
+//------------------------------------------------------------------
 router.get('/users/:id?',(req,res)=>{
   if(req.params.id){
-  return editUser.getUser(req.params.id,res)
+    return editUser.getUser(req.params.id,res)
 } })
-PEGAR DADOS DO USUARIO
-------------------------------------------------------------------*/
+
+//------------------------------------------------------------------
 router.use('/users/verifyToken',(req,res,next)=>{
 
   if(req.method == "OPTIONS"){
@@ -432,6 +432,30 @@ router.get('/users/remedys/:id?',(req,res) =>{
       })
 
   })
+// Informations
 
+  const informations = require("../api/informations/informations")
+
+  router.get('/informations/allstates',(req,res) =>{
+    return informations.getAllStates(res)
+  })
+
+  router.get('/informations/city/:id?',(req,res) =>{
+    if(req.params.id){
+      let stateUf
+
+      informations.getUfOfState(req.params.id,function(err,rows) {
+        if(rows.length > 0){
+          stateUf = rows[0].Uf
+          return informations.getCityOfState(stateUf,res)
+
+        }else{
+
+          res.status(403).send({res: "state-uf-fail"})
+        }
+
+      })
+
+  }})
 
 }

@@ -5,7 +5,7 @@ function getVerifyIfUserExists(req,res){
   return con.queryFunction(`SELECT * FROM tb_users WHERE des_mail like '${req}'`,res)
 }
 function getUser(req,res) {
-  return con.queryGet(`SELECT * FROM tb_users WHERE des_mail like '${req}'`,res)
+  return con.queryGet(`SELECT des_address,des_state,des_city,num_cep,num_phone FROM tb_users WHERE des_mail like '${req}'`,res)
 }
 
 function getUserById(req,res) {
