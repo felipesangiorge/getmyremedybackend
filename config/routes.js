@@ -151,7 +151,7 @@ module.exports = function (server) {
   const editUser= require('../api/register/editUser')
 
 //------------------------------------------------------------------
-router.get('/users/:id?',(req,res)=>{
+router.get('/users/:id?',auth.handleAuthorization,(req,res)=>{
   if(req.params.id){
     return editUser.getUser(req.params.id,res)
 } })
@@ -285,11 +285,18 @@ router.get('/users/remedys/:id?',(req,res) =>{
   })
 
   router.get('/remedys/:id?',(req,res) =>{
-
     if(req.params.id){
            remedys.deleteExpiredRemedys()
-    return remedys.getRemedysBySameName(req.params.id,res)
-  }})
+           return remedys.getRemedysBySameName(req.params.id,res)
+  }
+})
+
+  router.get('/remedysByCity/:id?&:city?',(req,res) =>{
+    
+    if(req.params){
+      return remedys.getRemedysBySameNameAndCity(req.params,res)
+    }
+})
 
 
   router.use('/remedys/registerNewRemedy',auth.handleAuthorization, (req,res) => {

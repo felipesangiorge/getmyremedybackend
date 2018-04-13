@@ -47,6 +47,14 @@ function getRemedysBySameName(id,res){
                         WHERE tb_remedys.idfk_remedys_menu = ${id} AND des_validate >= CURDATE()`,res)
 }
 
+function getRemedysBySameNameAndCity(req,res){
+    return con.queryGet(`SELECT  tb_remedys.des_name,tb_remedys.des_validate ,tb_remedys.des_imagePath,
+                        tb_users.nom_name, tb_users.des_city, tb_users.des_mail, tb_users.num_phone FROM tb_remedys_menu
+                        INNER JOIN tb_remedys  ON tb_remedys.idfk_remedys_menu  = tb_remedys_menu.idtb_remedys_menu
+                        INNER JOIN tb_users ON tb_remedys.idtb_remedy_by_user = tb_users.idtb_users
+                        WHERE tb_remedys.idfk_remedys_menu = ${req.id} AND tb_users.des_city like '${req.city}' AND des_validate >= CURDATE()`,res)
+}
+
 function deleteExpiredRemedys() {
     con.query(`DELETE FROM tb_remedys WHERE des_validate < CURDATE()`)
 }
@@ -100,6 +108,7 @@ module.exports = {getRemedys,
                   getRemedysByMenuCategory,
                   getRemedysByMenuIdFunction,
                   getRemedysBySameName,
+                  getRemedysBySameNameAndCity,
                   getRemedysByUser,
                   getRemedysById,
                   getRemedysMenu,

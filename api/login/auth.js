@@ -21,8 +21,13 @@ const handleAuthorization = (req,res,next) =>{
     token.verify(tkr,env.secret,(error,decoded)=>{
 
       if(decoded){
-        res.json({res: 'authorized'})
-        next()
+          if(req.method == "GET"){
+          next()
+          
+      }else{
+          res.json({res: 'authorized'})
+          next()
+        }
       }else{
         res.status(403).json({res: 'Não autorizado.'})
       }
